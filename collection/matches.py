@@ -3,7 +3,7 @@ from __future__ import annotations
 import threading
 import time
 
-from constants import serverPackets
+from packets import serverPackets
 from constants.exceptions import periodicLoopException
 from logger import log
 from objects import glob

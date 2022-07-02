@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from constants import serverPackets
+from packets import serverPackets
 from logger import log
 from objects import glob
 

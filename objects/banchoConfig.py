@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from common import generalUtils
 
-from constants import serverPackets
+from packets import serverPackets
 from logger import log
 from objects import glob
 

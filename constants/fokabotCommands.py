@@ -28,7 +28,7 @@ from constants import matchModModes
 from constants import matchScoringTypes
 from constants import matchTeams
 from constants import matchTeamTypes
-from constants import serverPackets
+from packets import serverPackets
 from constants import slotStatuses
 from helpers import chatHelper as chat
 from helpers import systemHelper

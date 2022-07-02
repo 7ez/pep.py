@@ -11,7 +11,7 @@ from common.constants import privileges
 from common.ripple import userUtils
 
 from constants import exceptions
-from constants import serverPackets
+from packets import serverPackets
 from constants.rosuprivs import ADMIN_PRIVS
 from events import logoutEvent
 from helpers import chatHelper as chat

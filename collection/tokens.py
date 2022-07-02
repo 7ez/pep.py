@@ -7,7 +7,7 @@ from typing import Optional
 import redis
 from common.ripple import userUtils
 
-from constants import serverPackets
+from packets import serverPackets
 from constants.exceptions import periodicLoopException
 from events import logoutEvent
 from helpers.user_helper import username_safe

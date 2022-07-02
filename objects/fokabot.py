@@ -9,7 +9,7 @@ from common.constants import actions
 from common.ripple import userUtils
 
 from constants import fokabotCommands
-from constants import serverPackets
+from packets import serverPackets
 from logger import log
 from objects import glob
 

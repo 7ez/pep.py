@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import time
 
-from constants import serverPackets
+from packets import serverPackets
 from helpers import chatHelper as chat
 from logger import log
 from objects import glob

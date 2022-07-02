@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from common.redis import generalPubSubHandler
 
-from constants import serverPackets
+from packets import serverPackets
 from objects import glob
 
 

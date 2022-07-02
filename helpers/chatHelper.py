@@ -8,7 +8,7 @@ from typing import Union
 from common.ripple import userUtils
 
 from constants import exceptions
-from constants import serverPackets
+from packets import serverPackets
 from events import logoutEvent
 from logger import log
 from objects import fokabot

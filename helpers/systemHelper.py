@@ -9,7 +9,7 @@ import time
 
 import psutil
 
-from constants import serverPackets
+from packets import serverPackets
 from helpers import consoleHelper
 from logger import log
 from objects import glob

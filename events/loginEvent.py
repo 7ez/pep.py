@@ -10,7 +10,7 @@ from common.constants import privileges
 from common.ripple import userUtils
 
 from constants import exceptions
-from constants import serverPackets
+from packets import serverPackets
 from helpers import chatHelper as chat
 from helpers import geo_helper
 from helpers.geo_helper import get_full

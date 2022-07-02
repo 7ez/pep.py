@@ -4,7 +4,7 @@ import random
 
 from common import generalUtils
 
-from constants import clientPackets
+from packets import clientPackets
 from constants import matchModModes
 from constants import matchTeams
 from constants import matchTeamTypes

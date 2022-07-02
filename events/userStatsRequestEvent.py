@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from constants import clientPackets
-from constants import serverPackets
+from packets import clientPackets
+from packets import serverPackets
 from logger import log
 
 

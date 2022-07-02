@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from common.ripple import userUtils
 
-from constants import clientPackets
+from packets import clientPackets
 from logger import log
 
 
