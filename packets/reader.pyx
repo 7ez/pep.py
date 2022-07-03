@@ -1,8 +1,10 @@
 from libc.stdint cimport *
-from libc.stdlib cimport malloc
+from libc.stdlib cimport malloc, free
 
 cdef extern from "<stdlib.h>" nogil:
     void *memcpy(void *dest, void *src, size_t n)
+
+cdef const char* EMPTY_STR = ""
 
 cdef class PacketReader:
     """A class made for reading a packet buffer."""
@@ -45,7 +47,7 @@ cdef class PacketReader:
     cpdef float read_f32(self):
         cdef float val
         memcpy(&val, self.buffer, 2)
-        self.buffer += 4
+        self.buffer += 2
         return val
 
     cpdef int8_t read_int8(self):
@@ -86,17 +88,17 @@ cdef class PacketReader:
             shift += 7
         return val
     
-    cpdef char* read_string(self):
+    cdef char* read_string(self):
         cdef uint8_t exists = self.read_uint8()
 
         if exists != 0xb:
-            return NULL
+            return EMPTY_STR
         
         cdef uint16_t length = self.read_uleb128()
 
         # Don't allow someone to segfault by sending an incorrect length.
         if length > self.end - self.buffer:
-            return NULL
+            return EMPTY_STR
 
         # TODO: Check if python garbage collects this properly.
         cdef char *str = <char*>malloc(length + 1)
@@ -104,3 +106,12 @@ cdef class PacketReader:
         str[length] = "\0"
         self.buffer += length
         return str
+    
+    cpdef str read_string_py(self):
+        cdef char* string = self.read_string()
+        cdef str py_string = string.decode("utf-8")
+        free(string)
+        return py_string
+
+    cpdef skip(self, size_t length):
+        self.buffer += length
