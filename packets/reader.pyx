@@ -93,6 +93,11 @@ cdef class PacketReader:
             return NULL
         
         cdef uint16_t length = self.read_uleb128()
+
+        # Don't allow someone to segfault by sending an incorrect length.
+        if length > self.end - self.buffer:
+            return NULL
+
         # TODO: Check if python garbage collects this properly.
         cdef char *str = <char*>malloc(length + 1)
         memcpy(str, self.buffer, length)
