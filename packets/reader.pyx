@@ -6,6 +6,10 @@ cdef extern from "<stdlib.h>" nogil:
 
 cdef const char* EMPTY_STR = ""
 
+cdef struct Int32Array:
+    int32_t* data
+    uint16_t size
+
 cdef class PacketReader:
     """A class made for reading a packet buffer."""
 
@@ -100,12 +104,12 @@ cdef class PacketReader:
         if length > self.end - self.buffer:
             return EMPTY_STR
 
-        # TODO: Check if python garbage collects this properly.
-        cdef char *str = <char*>malloc(length + 1)
-        memcpy(str, self.buffer, length)
-        str[length] = "\0"
+        # This isn't automatically GC'd by Python, remember to call free.
+        cdef char* string = <char*>malloc(length + 1)
+        memcpy(string, self.buffer, length)
+        string[length] = "\0"
         self.buffer += length
-        return str
+        return string
     
     cpdef str read_string_py(self):
         cdef char* string = self.read_string()
@@ -115,3 +119,31 @@ cdef class PacketReader:
 
     cpdef skip(self, size_t length):
         self.buffer += length
+    
+    cdef Int32Array read_arr(self):
+        cdef uint16_t length = self.read_uint16()
+
+        cdef int32_t* arr = <int32_t*>malloc(length * 2)
+        memcpy(arr, self.buffer, length * 2)
+        self.buffer += length * 2
+        return Int32Array(arr, length)
+    
+    cpdef list read_arr_py(self):
+        cdef Int32Array arr = self.read_arr()
+        cdef list py_arr = [i for i in arr.data[:arr.size]]
+        free(arr.data)
+        return py_arr
+
+    cpdef skip_arr(self):
+        cdef uint16_t length = self.read_uint16()
+        self.skip(length * 2)
+    
+    cpdef skip_string(self):
+        cdef uint8_t exists = self.read_uint8()
+
+        if exists != 0xb:
+            return
+        
+        cdef uint16_t length = self.read_uleb128()
+        self.skip(length)
+

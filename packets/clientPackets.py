@@ -3,72 +3,94 @@ from __future__ import annotations
 from constants import dataTypes
 from constants import slotStatuses
 from helpers import packetHelper
+from .reader import PacketReader
+
+from typing import TypedDict
 
 
 """ Users listing packets """
 
+class ActionChange(TypedDict):
+    actionID: int
+    actionText: str
+    actionMd5: str
+    actionMods: int
+    gameMode: int
+    beatmapID: int
+    
+def userActionChange(reader: PacketReader) -> ActionChange:
+    
+    return {
+        "actionID": reader.read_uint8(),
+        "actionText": reader.read_string(),
+        "actionMd5": reader.read_string(),
+        "actionMods": reader.read_uint32(),
+        "gameMode": reader.read_uint8(),
+        "beatmapID": reader.read_int32(),
+    }
+    
+class UsersRequest(TypedDict):
+    users: list[int]
 
-def userActionChange(stream):
-    return packetHelper.readPacketData(
-        stream,
-        [
-            ["actionID", dataTypes.BYTE],
-            ["actionText", dataTypes.STRING],
-            ["actionMd5", dataTypes.STRING],
-            ["actionMods", dataTypes.UINT32],
-            ["gameMode", dataTypes.BYTE],
-            ["beatmapID", dataTypes.SINT32],
-        ],
-    )
+
+def userStatsRequest(reader: PacketReader) -> UsersRequest:
+    return {
+        "users": reader.read_arr_py(),
+    }
 
 
-def userStatsRequest(stream):
-    return packetHelper.readPacketData(stream, [["users", dataTypes.INT_LIST]])
-
-
-def userPanelRequest(stream):
-    return packetHelper.readPacketData(stream, [["users", dataTypes.INT_LIST]])
+def userPanelRequest(reader: PacketReader) -> UsersRequest:
+    return {
+        "users": reader.read_arr_py(),
+    }
 
 
 """ Client chat packets """
 
+class MessageSend(TypedDict):
+    message: str
+    to: str
 
-def sendPublicMessage(stream):
-    return packetHelper.readPacketData(
-        stream,
-        [
-            ["unknown", dataTypes.STRING],
-            ["message", dataTypes.STRING],
-            ["to", dataTypes.STRING],
-        ],
-    )
-
-
-def sendPrivateMessage(stream):
-    return packetHelper.readPacketData(
-        stream,
-        [
-            ["unknown", dataTypes.STRING],
-            ["message", dataTypes.STRING],
-            ["to", dataTypes.STRING],
-            ["unknown2", dataTypes.UINT32],
-        ],
-    )
+def sendPublicMessage(reader: PacketReader) -> MessageSend:
+    reader.skip_string()
+    return {
+        "message": reader.read_str_py(),
+        "to": reader.read_str_py(),
+    }
 
 
-def setAwayMessage(stream):
-    return packetHelper.readPacketData(
-        stream,
-        [["unknown", dataTypes.STRING], ["awayMessage", dataTypes.STRING]],
-    )
+def sendPrivateMessage(reader: PacketReader) -> MessageSend:
+    # Skip unknown
+    reader.skip_string()
+    resp: MessageSend = {
+        "message": reader.read_str_py(),
+        "to": reader.read_str_py(),
+    }
+    # Skip unknown again
+    reader.read_uint32()
+    return resp
+
+class SetAwayMessage(TypedDict):
+    awayMessage: str
 
 
-def channelJoin(stream):
-    return packetHelper.readPacketData(stream, [["channel", dataTypes.STRING]])
+def setAwayMessage(reader: PacketReader) -> SetAwayMessage:
+    reader.skip_string()
+    
+    return {
+        "awayMessage": reader.read_str_py(),
+    }
+    
+class ChannelInfo(TypedDict):
+    channel: str
 
 
-def channelPart(stream):
-    return packetHelper.readPacketData(stream, [["channel", dataTypes.STRING]])
+def channelJoin(reader: PacketReader) -> ChannelInfo:
+    return {
+        "channel": reader.read_string(),
+    }
+
+channelPart = channelJoin
 
 
 def addRemoveFriend(stream):
