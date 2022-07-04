@@ -79,7 +79,7 @@ cdef class PacketReader:
 
     # In theory this should be higher, but osu doesnt allow strings
     # over 2048 chars.
-    cpdef uint16_t read_uleb128(self):
+    cdef uint16_t read_uleb128(self):
         cdef uint16_t val = 0
         cdef uint16_t shift = 0
         cdef int8_t byte = 0
