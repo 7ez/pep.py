@@ -165,7 +165,7 @@ cpdef bytes buildPacket(int __packet, __packetData = None):
 	packetBytes += bytes(b"\x00")					# unused byte
 	packetBytes += struct.pack("<l", packetLength)	# packet lenght (iint32)
 	packetBytes += packetData						# packet data
-	return packetBytes
+	return packetBytes 
 
 cpdef int readPacketID(bytes stream):
 	"""

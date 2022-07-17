@@ -106,7 +106,7 @@ def startSpectating(stream):
 
 """ Multiplayer packets """
 
-
+# Note for later me: look up optional typeddict keys.
 def matchSettings(stream):
     # Data to return, will be merged later
     data = []
