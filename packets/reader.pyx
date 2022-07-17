@@ -50,8 +50,8 @@ cdef class PacketReader:
     
     cpdef float read_f32(self):
         cdef float val
-        memcpy(&val, self.buffer, 2)
-        self.buffer += 2
+        memcpy(&val, self.buffer, 4)
+        self.buffer += 4
         return val
 
     cpdef int8_t read_int8(self):
@@ -123,9 +123,9 @@ cdef class PacketReader:
     cdef Int32Array read_arr(self):
         cdef uint16_t length = self.read_uint16()
 
-        cdef int32_t* arr = <int32_t*>malloc(length * 2)
-        memcpy(arr, self.buffer, length * 2)
-        self.buffer += length * 2
+        cdef int32_t* arr = <int32_t*>malloc(length * 4)
+        memcpy(arr, self.buffer, length * 4)
+        self.buffer += length * 4
         return Int32Array(arr, length)
     
     cpdef list read_arr_py(self):
@@ -136,7 +136,7 @@ cdef class PacketReader:
 
     cpdef skip_arr(self):
         cdef uint16_t length = self.read_uint16()
-        self.skip(length * 2)
+        self.skip(length * 4)
     
     cpdef skip_string(self):
         cdef uint8_t exists = self.read_uint8()
